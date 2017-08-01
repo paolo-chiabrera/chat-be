@@ -1,0 +1,3 @@
+[submodule "chat-fe"]
+	path = chat-fe
+	url = https://github.com/paolo-chiabrera/chat-fe.git
