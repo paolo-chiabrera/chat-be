@@ -21,10 +21,10 @@ const logger = {
 };
 
 describe('Given a Messages store', () => {
-  let messages;
+  let messageStore;
 
   beforeEach(() => {
-    messages = new MessagesStore(logger);
+    messageStore = new MessagesStore(logger);
   });
 
   afterEach(function () {
@@ -33,13 +33,13 @@ describe('Given a Messages store', () => {
 
   describe('When initialized', () => {
     it('Should be empty', () => {
-      expect(messages.getAll()).to.deep.equal([]);
+      expect(messageStore.getAll()).to.deep.equal([]);
     });
   });
 
   describe('When adding an invalid message', () => {
     beforeEach(() => {
-      messages.add();
+      messageStore.add();
     });
 
     it('Should log a warning', () => {
@@ -50,7 +50,7 @@ describe('Given a Messages store', () => {
 
   describe('When adding an invalid message.user', () => {
     beforeEach(() => {
-      messages.add({
+      messageStore.add({
         user: null
       });
     });
@@ -63,7 +63,7 @@ describe('Given a Messages store', () => {
 
   describe('When adding an invalid message.content', () => {
     beforeEach(() => {
-      messages.add({
+      messageStore.add({
         content: null,
         user: MOCK_USER
       });
@@ -82,11 +82,11 @@ describe('Given a Messages store', () => {
     };
 
     beforeEach(() => {
-      messages.add(MESSAGE);
+      messageStore.add(MESSAGE);
     });
 
     it('Should store the message', () => {
-      const { content, user } = messages.getAll()[0];
+      const { content, user } = messageStore.getAll()[0];
 
       expect(content).to.equal(MESSAGE.content);
       expect(user).to.deep.equal(MESSAGE.user);
@@ -100,13 +100,47 @@ describe('Given a Messages store', () => {
     };
 
     beforeEach(() => {
-      messages.add(MESSAGE);
+      messageStore.add(MESSAGE);
     });
 
     it('Should store a sanitized message', () => {
-      const { content } = messages.getAll()[0];
+      const { content } = messageStore.getAll()[0];
 
       expect(content).to.equal(MOCK_SAFE_CONTENT);
+    });
+  });
+
+  describe('When adding too many messageStore', () => {
+    const MESSAGE = {
+      content: MOCK_SAFE_CONTENT,
+      user: MOCK_USER
+    };
+
+    const LAST_MESSAGE = {
+      content: 'last',
+      user: MOCK_USER
+    };
+
+    let messages;
+
+    beforeEach(() => {
+      messageStore.limit = 5;
+
+      for(let i = 0; i <= messageStore.limit; i++) {
+        messageStore.add(MESSAGE);
+      }
+
+      messageStore.add(LAST_MESSAGE);
+
+      messages = messageStore.getAll();
+    });
+
+    it('Should respect the messages limit size', () => {
+      expect(messages.length).to.equal(messageStore.limit);
+    });
+
+    it('Should keep the latest messages', () => {
+      expect(messages[messages.length -1].content).to.equal(LAST_MESSAGE.content);
     });
   });
 });
