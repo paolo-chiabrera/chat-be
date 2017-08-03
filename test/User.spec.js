@@ -1,6 +1,6 @@
 const { expect } = require('chai');
 
-const User = require('../lib/user');
+const User = require('../lib/User');
 
 describe('Given a User', () => {
   let user;

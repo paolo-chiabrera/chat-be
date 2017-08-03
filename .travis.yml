@@ -1,0 +1,10 @@
+language: node_js
+node_js:
+- v8
+deploy:
+  provider: npm
+  email: paolo.chiabrera@gmail.com
+  api_key:
+    secure: p8EvkmmZl9hL+MPDJXOufkqnj5dl3maWlbu69q83TEdfJcYCfNdLpJ55Frirb4keNsOMAU403Hgrc4MOJ00x32+BT1/60PaKrGje+LMbkw9cs4Vzvgt40E1ABTog++iRFqMruz39Ka+fPmzrUW/v1TmIYerkml57jyI1Z6PAJiaXsGrrSXKaUq0MrKTNq9bWir1wvD9DSEPSAR8gwV7PrLWgyDq/3FUTbKMSOYUbHfbupbwnLfBBlIcdKAucHEhTTsdSRJmA4Riy/PBtsd+eDnJwiEoc27yeyPOSnK7oaHQ8U8WB1DQGR7K5ZrEgjohBAE9bMUcoL9IDCuuwvKxlRZoYqlu+smU2GfStUqWfpogJUw78lJX0k8i/9PZv+0S3FYvqYvD5bkFjqkxz88gb8Prl2mTFmVglJsG7LEa8KuPxTjldQRrxJwzKHB2taKwWTymCDen2IP4Ru8XEZT1Z2wx5cnQPgArnS/enWoeHb3JqQGENhzAGa9f0M+mfbeu1LUQp5pEWEUzt15SF2s6f5Ve663X7KQLx0F1Pw9jYKnW5dnMZYOu1ed0SQWL8tSrrWToVONOWf7w9i9pIHhJ+7TWwyxjSR2Sv8iFoEmhM5GyeTfp+DymYbizbTbwmOZNOAImZg4B5E22w9SM/Aby8JP+DKNwofUvLTBJlYEg1K3o=
+  on:
+    repo: paolo-chiabrera/chat-be
