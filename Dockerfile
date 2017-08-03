@@ -8,7 +8,7 @@ ENV PORT 3000
 
 ENV PM2_HOME /home/app/.pm2
 
-# RUN npm install pm2@latest -g
+RUN npm install pm2@latest -g
 
 # cache npm install
 
@@ -26,5 +26,4 @@ WORKDIR /home/app
 
 EXPOSE 3000
 
-# CMD pm2 start /home/app/bin/www -x -i 1 --name app && pm2 save && pm2 logs
-CMD npm start
+CMD pm2 start /home/app/bin/www -x -i 1 --name app && pm2 save && pm2 logs
