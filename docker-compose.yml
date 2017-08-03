@@ -1,0 +1,29 @@
+version: "3"
+
+services:
+  char-fe:
+    image: quay.io/d3lirium/chat-fe
+    environment:
+      NODE_ENV: production
+    ports:
+      - "80:80"
+    links:
+      - chat-be
+    volumes:
+     - datavolume:/home/app/dist/socket.io
+  chat-be:
+    image: quay.io/d3lirium/chat-be
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+    ports:
+      - "3000"
+    links:
+      - chat-redis
+    volumes:
+      - datavolume:/home/app/node_modules/socket.io-client/dist
+  chat-redis:
+    image: redis:3.2
+volumes:
+  datavolume:
+    driver: local
