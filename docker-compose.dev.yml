@@ -1,6 +1,3 @@
-version: "3"
-
-services:
   char-fe:
     build: ./chat-fe
     environment:
@@ -9,21 +6,16 @@ services:
       - "80:80"
     links:
       - chat-be
-    volumes:
-     - datavolume:/home/app/dist/socket.io
   chat-be:
     build: .
     environment:
       NODE_ENV: production
-      PORT: 3000
     ports:
       - "3000"
+      - "3001"
     links:
       - chat-redis
-    volumes:
-      - datavolume:/home/app/node_modules/socket.io-client/dist
   chat-redis:
-    image: redis:3.2
-volumes:
-  datavolume:
-    driver: local
+    image: redis:latest
+    ports:
+      - "6379"

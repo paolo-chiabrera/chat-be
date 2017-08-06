@@ -23,6 +23,10 @@ const {
   MOCK_USER
 } = require('./mocks');
 
+const MOCK_USERS = {
+  [MOCK_USERNAME]: MOCK_USER
+};
+
 chai.use(sinonChai);
 
 const { expect } = chai;
@@ -30,15 +34,15 @@ const { expect } = chai;
 const sandbox = sinon.sandbox.create();
 
 const messagesStore = {
-  add: sandbox.stub(),
-  getAll: sandbox.stub().returns(MOCK_MESSAGES)
+  add: sandbox.stub().callsArgWith(1, null, MOCK_MESSAGES),
+  getAll: sandbox.stub().callsArgWith(0, null, MOCK_MESSAGES)
 };
 
 const usersStore = {
-  add: sandbox.stub(),
-  get: sandbox.stub().returns(MOCK_USER),
-  getAll: sandbox.stub(),
-  delete: sandbox.stub()
+  add: sandbox.stub().callsArgWith(1, null, MOCK_USERS),
+  get: sandbox.stub().callsArgWith(1, null, MOCK_USER),
+  getAll: sandbox.stub().callsArgWith(0, null, MOCK_USERS),
+  delete: sandbox.stub().callsArgWith(1, null, MOCK_USERS)
 };
 
 const socket = {
@@ -64,7 +68,7 @@ describe('Given a Chat', () => {
 
   describe('When adding a new user', () => {
     before(() => {
-      addUser({ socket, user, usersStore });
+      addUser({ io, socket, user, usersStore });
     });
 
     it('Should create a new User', () => {
@@ -72,7 +76,8 @@ describe('Given a Chat', () => {
     });
 
     it('Should add the user to the memory', () => {
-      expect(usersStore.add).to.be.calledOnce;
+      expect(usersStore.add).to.be.calledOnce
+        .and.to.be.calledWith(MOCK_USER);
     });
 
     it('Should set socket.username', () => {
@@ -81,7 +86,12 @@ describe('Given a Chat', () => {
 
     it('Should socket.emit the new user', () => {
       expect(socket.emit).to.be.calledOnce
-        .and.to.be.calledWith(USER);
+        .and.to.be.calledWith(USER, MOCK_USER);
+    });
+
+    it('Should io.sockets.emit all the users', () => {
+      expect(io.sockets.emit).to.be.calledOnce
+        .and.to.be.calledWith(USERS, MOCK_USERS);
     });
   });
 
@@ -92,12 +102,12 @@ describe('Given a Chat', () => {
 
     it('Should broadcast the USERS', () => {
       expect(usersStore.getAll).to.be.calledOnce;
-      expect(io.sockets.emit).to.be.calledWith(USERS);
+      expect(io.sockets.emit).to.be.calledWith(USERS, MOCK_USERS);
     });
 
     it('Should broadcast the MESSAGES', () => {
       expect(messagesStore.getAll).to.be.calledOnce;
-      expect(io.sockets.emit).to.be.calledWith(MESSAGES);
+      expect(io.sockets.emit).to.be.calledWith(MESSAGES, MOCK_MESSAGES);
     });
   });
 
@@ -114,7 +124,7 @@ describe('Given a Chat', () => {
     });
 
     it('Should broadcast the USERS', () => {
-      expect(io.sockets.emit).to.be.calledWith(USERS);
+      expect(io.sockets.emit).to.be.calledWith(USERS, MOCK_USERS);
     });
   });
 
@@ -128,13 +138,13 @@ describe('Given a Chat', () => {
     });
 
     it('Should removed the user from memory', () => {
+      expect(usersStore.get).to.be.calledOnce
+        .and.to.be.calledWith(socket.username);
       expect(messagesStore.add).to.be.calledOnce
         .and.to.be.calledWith({
           content: MOCK_CONTENT,
           user: MOCK_USER
         });
-      expect(usersStore.get).to.be.calledOnce
-        .and.to.be.calledWith(socket.username);
     });
 
     it('Should broadcast all the MESSAGES', () => {

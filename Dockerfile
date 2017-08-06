@@ -4,11 +4,7 @@ MAINTAINER Paolo Chiabrera <paolo.chiabrera@gmail.com>
 
 ENV NODE_ENV production
 
-ENV PORT 3000
-
 ENV PM2_HOME /home/app/.pm2
-
-RUN npm install pm2@latest -g
 
 # cache npm install
 
@@ -24,6 +20,4 @@ ADD . /home/app
 
 WORKDIR /home/app
 
-EXPOSE 3000
-
-CMD pm2 start /home/app/bin/www -x -i 1 --name app && pm2 save && pm2 logs
+CMD npm run prod
