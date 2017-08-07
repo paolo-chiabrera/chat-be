@@ -1,4 +1,4 @@
-  char-fe:
+  chat-fe:
     build: ./chat-fe
     environment:
       NODE_ENV: production

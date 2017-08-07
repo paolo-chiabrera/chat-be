@@ -1,4 +1,4 @@
-  char-fe:
+  chat-fe:
     image: quay.io/d3lirium/chat-fe
     environment:
       NODE_ENV: production
