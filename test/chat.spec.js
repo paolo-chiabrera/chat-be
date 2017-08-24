@@ -6,12 +6,18 @@ const {
   addUser,
   broadcastUpdates,
   onDisconnect,
-  onMessage
+  onMessage,
+  onStopTyping,
+  onTyping
 } = require('../lib/chat');
 
 const {
   MESSAGE,
   MESSAGES,
+  SOMEONE_HAS_STOP_TYPING,
+  SOMEONE_IS_TYPING,
+  STOP_TYPING,
+  TYPING,
   USER,
   USERS
 } = require('../lib/constants');
@@ -149,6 +155,36 @@ describe('Given a Chat', () => {
 
     it('Should broadcast all the MESSAGES', () => {
       expect(io.sockets.emit).to.be.calledWith(MESSAGES, MOCK_MESSAGES);
+    });
+  });
+
+  describe('When an user is typing', () => {
+    beforeEach(() => {
+      io.sockets.emit.reset();
+
+      onTyping({ io, socket });
+
+      socket.emit(TYPING);
+    });
+
+    it('Should broadcast the user typing', () => {
+      expect(io.sockets.emit).to.be.calledOnce
+        .and.to.be.calledWith(SOMEONE_IS_TYPING, MOCK_USERNAME);
+    });
+  });
+
+  describe('When an user has stopped typing', () => {
+    beforeEach(() => {
+      io.sockets.emit.reset();
+
+      onStopTyping({ io, socket });
+
+      socket.emit(STOP_TYPING);
+    });
+
+    it('Should broadcast the user whom stopped typing', () => {
+      expect(io.sockets.emit).to.be.calledOnce
+        .and.to.be.calledWith(SOMEONE_HAS_STOP_TYPING, MOCK_USERNAME);
     });
   });
 });
